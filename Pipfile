@@ -9,6 +9,7 @@ typing-extensions = "<4.5"
 faker = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+sqlalchemy-serializer = "*"
 
 [dev-packages]
 

@@ -1,11 +1,12 @@
 from faker import Faker
 from app import app
-from models import Book, Review, Author, db
+from models import Book, Review, Author, db, book_reviews
 from random import choice, randint
 
 fake = Faker()
 
 with app.app_context():
+    db.session.query(book_reviews).delete()
     Book.query.delete()
     Author.query.delete()
     Review.query.delete()
@@ -31,5 +32,7 @@ with app.app_context():
         links=f'https://www.book/{(choice(books)).title}'     
     )
         reviews.append(review)
+    # Link the review to 1–3 random books
+    review.books = [choice(books) for _ in range(randint(1, 40))]
     db.session.add_all(reviews)
     db.session.commit()
