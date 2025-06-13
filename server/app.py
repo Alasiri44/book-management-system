@@ -25,5 +25,25 @@ def books():
         response_body.append(body)
     return make_response(response_body, 200)
 
+
+@app.route('/books/<int:id>')
+def books_by_id(id):
+    books = Book.query.filter(Book.id == id).first()
+    if books:
+        response_body = books.to_dict()
+        status_code = 200
+    else:
+        response_body = '<p>Non existent book</p>'
+        status_code = 404
+
+    return make_response(response_body, status_code)
+
+@app.route('books/delete/<int:id>')
+def delete_books_by_id(id):
+    books = Book.query.filter(Book.id == id).first()
+    books.delete()
+    db.session.commit()
+    return '<h1>Successfully deleted</h1>'
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

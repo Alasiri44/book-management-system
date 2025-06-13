@@ -25,9 +25,9 @@ class Book(db.Model, SerializerMixin):
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
     
     # Relationship showing which author has written a book
-    author = db.relationship('Author', back_populates='books')
+    author = db.relationship('Author', back_populates='books', cascade='all, delete-orphan')
     
-    reviews = db.relationship('Review', secondary=book_reviews, back_populates='books')
+    reviews = db.relationship('Review', secondary=book_reviews, back_populates='books', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<Book {self.id}, {self.title}, {self.publication_year}>'
@@ -39,7 +39,7 @@ class Author(db.Model, SerializerMixin):
     name = db.Column(db.String)
     
     # Relationship referencing the author to books
-    books = db.relationship('Book', back_populates='author')
+    books = db.relationship('Book', back_populates='author', cascade='all, delete-orphan')
     
     serialize_only = ('name', )
     
@@ -54,7 +54,7 @@ class Review(db.Model, SerializerMixin):
     comment = db.Column(db.String)
     links = db.Column(db.String)
     
-    books = db.relationship('Book', secondary=book_reviews, back_populates='reviews')
+    books = db.relationship('Book', secondary=book_reviews, back_populates='reviews', cascade='all, delete-orphan')
     
     serialize_only = ('rating', 'comment', 'links' )
     def __repr__(self):
