@@ -22,7 +22,7 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
     
     # Relationship showing which author has written a book
-    author = db.relationship('Author',secondary=book_reviews, back_populates='books')
+    author = db.relationship('Author', back_populates='books')
     
     reviews = db.relationship('Review', secondary=book_reviews, back_populates='books')
     
