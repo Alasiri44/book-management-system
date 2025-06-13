@@ -1,5 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import MetaData
+from sqlalchemy_serializer import SerializerMixin
 
 metadata = MetaData()
 
@@ -13,8 +14,10 @@ book_reviews = db.Table(
     db.Column('review_id', db.Integer, db.ForeignKey('reviews.id'), primary_key=True)
 )
 
-class Book(db.Model):
+class Book(db.Model, SerializerMixin):
     __tablename__ = 'books'
+    
+    serialize_only = ('title', 'publication_year', 'author.name', 'reviews')
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
@@ -29,7 +32,7 @@ class Book(db.Model):
     def __repr__(self):
         return f'<Book {self.id}, {self.title}, {self.publication_year}>'
 
-class Author(db.Model):
+class Author(db.Model, SerializerMixin):
     __tablename__ = 'authors'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -38,10 +41,12 @@ class Author(db.Model):
     # Relationship referencing the author to books
     books = db.relationship('Book', back_populates='author')
     
+    serialize_only = ('name', )
+    
     def __repr__(self):
         return f'<Author {self.id}, {self.name}>'
 
-class Review(db.Model):
+class Review(db.Model, SerializerMixin):
     __tablename__ = 'reviews'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -51,5 +56,6 @@ class Review(db.Model):
     
     books = db.relationship('Book', secondary=book_reviews, back_populates='reviews')
     
+    serialize_only = ('rating', 'comment', 'links' )
     def __repr__(self):
         return f'<Review {self.id}, {self.rating}, {self.comment}>'
